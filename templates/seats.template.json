@@ -1,0 +1,31 @@
+{
+  "$schema_note": "Copied verbatim to $COUNCIL_HOME/seats.json (default ~/.claude/council/seats.json) on first activation, if that file does not yet exist. Never overwritten once it exists. Membership (add/remove/substitute a seat) is the Owner's alone.",
+  "seats": [
+    {
+      "id": "fable",
+      "role": "coordinator",
+      "model": "session",
+      "effort": "max",
+      "call_recipe": "SEAT-CALLS.md#session-native-seat-the-driving-session",
+      "trust": {
+        "sandbox": "n/a (runs as the driving session, under the harness's own permissions)",
+        "bypass": false,
+        "network": "n/a"
+      },
+      "notes": "The coordinator scribes the canonical file and orchestrates every other seat's calls, with no editorial veto over its own direction."
+    },
+    {
+      "id": "codex-astra",
+      "role": "seat",
+      "model": "gpt-6-astra",
+      "effort": "max",
+      "call_recipe": "SEAT-CALLS.md#planning-calls-read-only",
+      "trust": {
+        "sandbox": "read-only for planning calls (see SEAT-CALLS.md); workspace-write only under an elected execution contract, never under this registry entry",
+        "bypass": false,
+        "network": false
+      },
+      "notes": "Example seat only; the Owner may rename, retune, or replace this entry."
+    }
+  ]
+}

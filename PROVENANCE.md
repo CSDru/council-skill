@@ -1,0 +1,10 @@
+# Provenance
+
+Upstream: Jens Heitmann's `NulightJens/rocket-fuel-skill` @ 47dde4297 (MIT — its notice preserved verbatim in NOTICE.md; this skill's own LICENSE carries the Owner's copyright), adopted verbatim into this environment 2026-08-15 per the Owner's stay-identical-unless-valid-reason ruling.
+
+This skill, `council`, is a fork of that lineage created 2026-09-11: every rocket-fuel clause (SKILL.md, SAME-PAGE-MEETING.md, the staged CODEX-INTEGRATOR.md and HOUSE-HARDENING.md) was carried byte-exact, rewritten with its guarantees kept, or retired with a reason, against a frozen disposition map, plus the council design's new material (the seat registry, the seat-response contract, item lifecycle, the close rule's revision/roster binding, the gauntlet-interface split, the kept asymmetries, and the records rules). The upstream portion this fork is built from stays verbatim wherever the map says CARRY; this file records what changed and why so no invariant is lost silently.
+
+**Disposition-map summary:** of 201 frozen source clauses, 49 were CARRIED byte-exact, 141 were REWRITTEN with their named guarantees preserved (mainly: N equal seats replacing the fixed Visionary/Integrator pair, the meeting's revision+roster-bound close rule replacing an implicit verdict, and the gauntlet's own repair loop replacing the retired fix-round mechanism), and 11 were RETIRED (build-call recipes now owned by the gauntlet's arm registry, the fix-round and "take the wheel" provisions, superseded version-drift notes, and history/origin anecdotes with no operative content). 8 new rows cover material the prior system never had: the seat registry and its membership rule, the common seat-response contract, item IDs and lifecycle, the close rule's pass/revision/roster semantics, the split between meeting verdict and execution outcome, the L1-L3/L6/receipt-transport shape of the gauntlet interface, the kept asymmetries, and the records rules.
+
+---
+Based on the Visionary/Integrator operating system from *Rocket Fuel* by Gino Wickman and Mark C. Winters.

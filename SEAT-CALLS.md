@@ -61,7 +61,40 @@ codex exec resume "$THREAD_ID" -c sandbox_mode="read-only" --skip-git-repo-check
 
 Then read the pass's `-o` file: `OPEN ITEMS:` before the last line, and grep the last line for `VERDICT:`.
 
-**Execution is not a seat call.** Build/execution recipes belong to the gauntlet's arm registry (`~/.claude/gauntlet/arms.json`), not to this file -- see Arm contracts in [SKILL.md](SKILL.md).
+**Execution is not a seat call.** Where an executor engine is installed, build recipes belong to its arm registry, not to this file -- see Arm contracts in [SKILL.md](SKILL.md). In Standalone execution (SKILL.md) the elected seat builds under the Build calls recipe below, as an arm for the duration of its contract.
+
+## Build calls (workspace-write, only under an elected contract)
+
+Standalone execution only (SKILL.md). A build call is not a seat call: the elected seat runs it as an arm under a frozen contract, and every guarantee of the planning calls applies unless a line below replaces it.
+
+1. **Preconditions.** A frozen contract file whose sha256 is recorded in `PLAN_FILE`; a clean baseline (repository status empty, or the inventory baseline of step 4); the provider-pool readings required by this install's policy refreshed and recorded; the build directory named in the contract. Before dispatch, verify that the resolved receipt and originals paths lie outside the build directory (the recipe below does).
+2. **The fresh build call (codex).**
+
+```bash
+RUN=$(mktemp -d "${COUNCIL_RUN_ROOT:-/tmp}/rf.XXXXXX") || exit 70
+# write the build prompt (the contract text plus the file list) to "$RUN/prompt-build-a1.md" first
+R=$(cd "$RUN" && pwd -P) || exit 71
+B=$(cd "$BUILD_DIR" && pwd -P) || exit 71
+case "$OSTYPE" in msys*|cygwin*|win32*) R=$(cygpath -am "$R") || exit 71; B=$(cygpath -am "$B") || exit 71; R=${R,,}; B=${B,,};; esac
+case "${R%/}/" in "${B%/}/"*) printf '%s\n' 'receipt dir inside BUILD_DIR' >&2; exit 71;; esac
+inv() { ( set -o pipefail; cd "$BUILD_DIR" && find . -type f -print0 | LC_ALL=C sort -z | xargs -0 -r sha256sum ) > "$RUN/inv-$1.sha"; }
+inv before || exit 72
+cp -r "$BUILD_DIR" "$RUN/originals-before" || exit 73
+BUILD_STATUS=0
+codex exec -s workspace-write --skip-git-repo-check -C "$BUILD_DIR" --json -o "$RUN/out-build-a1.txt" - <"$RUN/prompt-build-a1.md" > "$RUN/stream-build-a1.jsonl" 2>/dev/null || BUILD_STATUS=$?
+echo "build_exit=$BUILD_STATUS" >> "$RUN/receipt.txt"
+inv after || exit 74
+D=0; diff "$RUN/inv-before.sha" "$RUN/inv-after.sha" > "$RUN/inv-delta.txt" || D=$?; [ "$D" -le 1 ] || exit 75
+exit "$BUILD_STATUS"
+```
+
+The build exit is captured immediately and kept in the receipt; the after-inventory must succeed; diff statuses 0 and 1 are the only accepted ones; the recipe returns the captured build status and is safe under errexit. Never `--ignore-user-config` on a build call: on a rig whose trust lives in the user config it silently enforces read-only (verified on Windows, codex-cli 0.154.0, 2026-09-18). Long builds run detached, per Call discipline.
+3. **Identity and binding.** Extract the thread id from the stream; read the provider session record turn_context for THIS build turn (model, effort, sandbox_policy). Compare the execution record with the elected model and effort, the full thread and turn identity, the contracted working directory, the actual sandbox policy (it must read workspace-write) and the frozen contract bytes; any missing or mismatched binding is UNVERIFIED, never PASS. The receipt records the thread id, turn index, model, effort, working directory, sandbox policy, the captured build exit and the contract sha256 the prompt was built from.
+4. **Snapshot.** The inventory before and after (hashes of every file under the build directory, the originals retained under the receipt directory); the delta lists additions, deletions and modifications; only paths the contract names may change; any other change is a STOP for the Owner, never an auto-revert.
+5. **Retry ladder for build calls (never blind).** Before any retry, establish that the prior writer has stopped, reconcile its checkpoint and the inventory delta against the original baseline, keep the frozen contract, and STOP on material divergence; a retry is a fresh attempt filename with the reconciled state stated in its prompt. Never rerun a mutating call merely to expose stderr -- read the stream and the record instead. For build calls this ladder replaces the generic retry instructions: allow at most one reconciled retry, then stop and surface the failure; preserve consumed rounds and never turn recovery into an independent repair loop.
+6. **Session-native seat.** Its build is the driving session's own tools under the same contract; its receipt records the runtime session and turn identity and the harness's permissions in place of the CLI fields, which are marked not applicable -- documented here, not exercised in the reference environment.
+7. **Rig evidence.** Reference environment, codex-cli 0.154.0, 2026-09-18: a fresh `-s workspace-write` thread recorded `sandbox_policy workspace-write` and wrote its files; the same call with `--ignore-user-config` recorded read-only and could not write.
+8. **Non-repository standalone runs.** For Standalone execution without a repository, use the preserved-content inventory before and after every provider call, including preflight and planning, in place of Git snapshots. A read-only call must leave that inventory unchanged; any change stops for the Owner. At L6, use the inventory delta in place of git diff --stat and inspect every changed hand-written file against its preserved original, including additions and deletions.
 
 ## L6 review mechanics (the non-author seat)
 

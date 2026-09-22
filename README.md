@@ -1,6 +1,6 @@
 # council
 
-A multi-seat planning body for AI coding agents: every registered seat states its own direction, reviews every other seat's, and a meeting closes only when all participating seats are on the same page -- bound to one plan revision and one frozen roster, with zero open items. Execution stays separate: this skill plans and reviews, an external executor (in the reference environment, the `infinity-gauntlet` skill's arm registry) builds.
+A multi-seat planning body for AI coding agents: every registered seat states its own direction, reviews every other seat's, and a meeting closes only when all participating seats are on the same page -- bound to one plan revision and one frozen roster, with zero open items. Execution stays separate: this skill plans and reviews; where an executor engine is installed (in the reference environment, the `infinity-gauntlet` skill's arm registry) it builds, and an install without one uses Standalone execution -- the seats elect one of themselves as the builder under a frozen contract and the non-author seats review.
 
 Forked from Jens Heitmann's `NulightJens/rocket-fuel-skill` (MIT); see `PROVENANCE.md` for the full lineage and what changed from a two-seat Visionary/Integrator pair to an open N-seat registry.
 

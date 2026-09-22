@@ -29,7 +29,7 @@ engine's skill and then this skill, VISIBLY, immediately before the convening
 call. In the reference environment those two calls read `Skill:
 infinity-gauntlet` then `Skill: council` -- the engine first, because the engine
 is what convenes the meeting; this skill second, because it is what the engine
-convenes.
+convenes. An install with no executor engine invokes this skill alone at GATE-IN and runs Standalone execution (below); nothing else in this section changes.
 
 The order matters and the visibility matters for the same reason: the calls are
 transcript markers. A process that skipped the meeting, loaded the wrong thing,
@@ -62,7 +62,7 @@ The council's seats are a REGISTRY, not hardcoded, mirroring the gauntlet's arm 
 
 **Accountabilities, equal:** every seat -- coordinator included -- carries the same accountabilities on every topic: direction, critique, verification, election input, and review. One seat is designated coordinator (today: the session model, Fable) and additionally scribes -- transcribes every pass into the canonical file, orchestrates the calls, tracks revisions -- but transcription confers no editorial veto: the coordinator's own direction is reviewed and can be overridden exactly like any other seat's.
 
-**No seat executes.** When more than one is accountable, nobody is: the council decides, and execution runs only through the gauntlet's election of an arm under a contract (see Arm contracts, below) -- never a seat holding the pen, coordinator included.
+**No seat executes.** When more than one is accountable, nobody is: the council decides, and execution runs only through the gauntlet's election of an arm under a contract (see Arm contracts, below) -- never a seat holding the pen, coordinator included. In an install with no executor engine, Standalone execution (below) is the one exception: the seats elect one of themselves as the builder, and that seat is an arm under a contract for its duration, not a seat holding the pen.
 
 ## The 5 Rules
 
@@ -119,7 +119,7 @@ If the user handed a frozen spec file, use it. If they handed a sentence, write 
 
 ## The gauntlet interface
 
-The council hosts no repair loop of its own. One L1-L3 meeting per gauntlet round holds L1 CLASSIFY (every seat states a class with rationale, jointly settled), L2 CONSULT (each seat's independent reading of the chart, SETUPS, PRIORS and quota is quoted before merging), and L3 PLAN (executor + setup election, agreed by all seats or left open). The L6 review meeting is a second, independently-capped meeting on the elected arm's result. A failed L6 is a failed gauntlet round: it recurs the loop, round counter +1, to the cap (default 3); the Owner decides at the cap. Arms run no independent repair loops of their own -- they do the assigned task and report back. Mechanical re-open passes (a receipt taken only because a harness notification or a compaction closed the gate round) count toward neither the meeting's pass cap nor the gauntlet's round cap.
+The council hosts no repair loop of its own. One L1-L3 meeting per gauntlet round holds L1 CLASSIFY (every seat states a class with rationale, jointly settled), L2 CONSULT (each seat's independent reading of the chart, SETUPS, PRIORS and quota is quoted before merging), and L3 PLAN (executor + setup election, agreed by all seats or left open). The L6 review meeting is a second, independently-capped meeting on the elected arm's result. A failed L6 is a failed gauntlet round: it recurs the loop, round counter +1, to the cap (default 3); the Owner decides at the cap. Arms run no independent repair loops of their own -- they do the assigned task and report back. Mechanical re-open passes (a receipt taken only because a harness notification or a compaction closed the gate round) count toward neither the meeting's pass cap nor the gauntlet's round cap. In Standalone execution (below) the same L1-L3 meeting elects a seat as the builder in place of an engine arm, and the L6 review meeting is held by the roster minus the builder.
 
 **Meeting verdict is not execution outcome.** At L6 the seats may reach SAME PAGE that the build FAILED, with an agreed defect list -- that agreement is the meeting closing correctly, not a deliberation objection reopening it. L7 grades the round; the gauntlet loop recurs on FAIL.
 
@@ -129,7 +129,7 @@ The council hosts no repair loop of its own. One L1-L3 meeting per gauntlet roun
 
 **Material impossibility, for arms:** an elected arm implementing a frozen contract that finds a detail impossible as written but the intent unambiguous implements the closest faithful version and reports the deviation. If the impossibility is MATERIAL (would change behavior, scope, or an interface), the arm does not improvise: it stops, outputs `BLOCKED: <reason>` as its report, and waits. It never redesigns.
 
-**Baseline, attribution, and unrelated-file protection:** `git init` is announced, never a commit, when a run begins with no repo; the baseline commit (planning artifacts only) is proposed for the Owner's per-instance approval; only the run's own artifacts are ever baselined; pre-existing dirty files that are not this run's artifacts stop the run and ask the Owner to commit, stash, or ignore them; `git status` is empty when an arm launches so its diff is exactly its own work.
+**Baseline, attribution, and unrelated-file protection:** `git init` is announced, never a commit, when a run begins with no repo; the baseline commit (planning artifacts only) is proposed for the Owner's per-instance approval; only the run's own artifacts are ever baselined; pre-existing dirty files that are not this run's artifacts stop the run and ask the Owner to commit, stash, or ignore them; `git status` is empty when an arm launches so its diff is exactly its own work. For Standalone execution only, a non-repository project may use a preserved-content inventory baseline instead of git initialization and a baseline commit; other installs retain the existing baseline rules.
 
 **Sandbox / bypass / network permissions** are the arm registry's trust fields, not a council decision: an arm's default sandbox is its own; bypass or danger flags need explicit per-run Owner approval; sandboxed network access is announced in one line before running, not treated as a new permission grant.
 
@@ -265,6 +265,22 @@ Passes 10 per L1-L3 meeting and 10 per L6 review meeting, a hard cap; an Owner-s
 Elections happen at L3 via the gauntlet, reviewed by every seat like any other plan line. Seats never route -- their job is to consult and elect, not to execute. Execution pins (a model/effort override on an execution call) carry only the Owner's authorization. Grades from L7 flow to the gauntlet's PRIORS. Usage informs election only (see Usage informs election only, below). An unavailable seat stops the meeting and notifies the Owner -- never a solo fallback. An executor's pre-start rate limit re-elects inside L4, on the remaining arms, with the event recorded.
 
 The council hosts no repair loop: a failed L6 is a failed gauntlet round, which recurs the loop to the cap, and the Owner decides at the cap. Post-cap self-execution needs the Owner's explicit go. Planner-seat models (e.g. the coordinator's own model, or another planning seat) are roster arms elected LAST in preference order, with no special permission and no "upgrade" framing, when the gauntlet elects them at all.
+
+## Standalone execution (installs without an executor engine)
+
+In Standalone execution only, invoke council alone; engine-specific activation, dispatch, registry, gate and retry requirements are replaced by this section's rules, while every Owner gate and every engine-backed install remain unchanged.
+
+**Activation.** This mode applies only when the standing-policy file the runtime reads names no executor engine skill and no engine skill is installed. An install with an engine never uses it. At L3 the coordinator states the condition it checked -- which policy file, which engine skills it searched for -- in one line, then announces: standalone execution -- the seats elect the builder.
+
+**Election.** The seats elect ONE seat as the builder, capability first, from the evidence the install has: its own meeting logs (prior L6 verdicts per seat). Where none exist, the seats agree the election on stated capability grounds, record the rationale, and that result becomes the first record. Planner-seat models (the coordinator's own model, or another planning seat) are elected LAST in preference order, with no special permission and no upgrade framing. A seat is electable only if its build call recipe in SEAT-CALLS.md exists and has been verified on the rig. The election is agreed by every seat or stays an open item.
+
+**Contract.** The build contract (the shape in Arm contracts, above, with the verbatim impossibility and BLOCKED spans) is written to its own file; the closing SAME PAGE of the L1-L3 meeting binds to that file by its sha256, recorded in `PLAN_FILE`. The contract file is excluded from the build writes and its hash is re-read at review. For the duration of the contract the elected seat is an ARM: it executes only the contract, checkpoints to disk as it goes, reports files changed and raw proof output, never redesigns, and returns BLOCKED on a material impossibility. While it builds, no seat touches the code (Rule 2). The seat that builds is not sitting as a seat while it builds.
+
+**Review.** For standalone L6, the electorate is the frozen roster minus the builder and must contain at least one seat; throughout pass collection, dispositions, availability and closure, participating reviewers means this electorate, while revision and roster binding, zero open items and the existing caps remain mandatory; the builder supplies factual answers in its own log section without a verdict or veto. A FAIL is a failed round: the meeting re-plans and may re-elect; after the round cap (default 3) the Owner decides. A build is never graded by its author.
+
+**The coordinator as builder.** Allowed, elected last in preference. It remains scribe; its build section and the electorate review are separate in time and in the log; its own verdict never counts on its own build.
+
+**Guarantees and record.** The build call carries the Build calls guarantees in SEAT-CALLS.md; its receipt binds the thread id, turn index, model, effort, working directory, sandbox policy and the contract sha256, and any missing or mismatched binding is UNVERIFIED, never PASS. The baseline rule applies (a repository, or the inventory baseline for a non-repository project). The log records the builder id, the contract hash and the identity evidence. An elected seat build is arm work and is graded as such by the install's records; seat participation in the meeting stays ungraded. Every Owner gate stays exactly where it is: the mode grants nothing.
 
 ## Verify before reject, reason before judge
 

@@ -6,7 +6,7 @@ Forked from Jens Heitmann's `NulightJens/rocket-fuel-skill` (MIT); see `PROVENAN
 
 ## Install
 
-Copy this directory to your skills directory (for Claude Code: `~/.claude/skills/council/`). No build step; it is plain Markdown + one JSON template.
+Copy this directory to your skills directory (for Claude Code: `~/.claude/skills/council/`). No build step; it is plain Markdown + one JSON template + one Markdown template (`templates/ELECTION.template.md`, the election meeting's record).
 
 On first activation, the skill creates its data home (`$COUNCIL_HOME`, default `~/.claude/council/`) and seeds `seats.json` from `templates/seats.template.json` if one does not already exist there. Edit `seats.json` to name your own seats -- membership is deliberately kept out of the skill directory so it is never overwritten by an update.
 

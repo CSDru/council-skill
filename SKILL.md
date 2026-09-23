@@ -93,9 +93,9 @@ Confirm in one line, then go: "Running a kickoff-shaped meeting for <thing>. Say
    - Completion: user has confirmed; `VTO.md` exists with a one-sentence Core Focus.
 2. **Draft the plan.** Write `PLAN.md`: 3 to 7 Rocks in dependency order. Every rock has a "done looks like" and a proof command (a test, a build, a curl). If you have more than 7 rocks you are stuffing 100 pounds into a 50-pound bag: cut or merge. Do less better.
    - Completion: every rock has a runnable proof command.
-3. **The council meeting.** `git init` is ANNOUNCED (not a commit) if there is no repo yet; the baseline commit of the planning artifacts is PROPOSED to the Owner for per-instance approval (the commit-gate section below governs). Then run the meeting per [MEETING.md](MEETING.md): every seat reviews read-only, independent direction first, bounded passes, symmetric dispositions, full log.
+3. **The council meeting.** `git init` is ANNOUNCED (not a commit) if there is no repo yet; the baseline commit of the planning artifacts is PROPOSED to the Owner for per-instance approval (the commit-gate section below governs). Then run the meeting per [MEETING.md](MEETING.md): every seat reviews read-only, independent direction first, bounded passes, symmetric dispositions, full log. Planning SAME PAGE advances to ELECT; execution requires election closure and all existing Owner gates.
    - Completion: every participating seat's `VERDICT: SAME PAGE` in the log on one revision and roster with zero open items, or a recorded scoped `USER OVERRIDE`.
-4. **Execution.** The gauntlet elects an arm (L4) and hands it a frozen build contract for the rock (see Arm contracts, below). Baseline first: `git status` is empty when the arm launches, so the diff is exactly its work -- unrelated pre-existing files are never swept into the baseline or the diff. While the arm holds the round, no seat touches the code (Rule 2).
+4. **The election meeting, then execution.** The election meeting (see The election meeting in [MEETING.md](MEETING.md)) elects the arm, effort, setup and agent count for each rock and closes on ELECTION.md; then the gauntlet (L4) hands the elected arm a frozen build contract for the rock (see Arm contracts, below). Baseline first: `git status` is empty when the arm launches, so the diff is exactly its work -- unrelated pre-existing files are never swept into the baseline or the diff. While the arm holds the round, no seat touches the code (Rule 2).
    - Completion: the arm's report -- files changed + proof output for the rock.
 5. **The L6 review meeting.** A NON-AUTHOR seat reviews: read the FULL diff, run the proof yourself (the arm's pasted output is a claim, not evidence), the smell vocabulary (duplicated code, mysterious names, feature envy, message chains, speculative generality). There is no repair loop here -- fix rounds and "take the wheel" are retired; a failed review is a failed gauntlet round, which recurs the loop to its cap, and post-cap self-execution needs the Owner's go.
    - Completion: an AGREED execution verdict, PASS or FAIL, supported by the non-author seat's own evidence -- passing proofs are required for PASS specifically. A FAIL completes the meeting too: L7 grades the round and the gauntlet takes its next round.
@@ -115,11 +115,11 @@ The file the user pointed at becomes the canonical plan file for the whole run: 
 
 ## Build-contract meeting (one scoped task)
 
-If the user handed a frozen spec file, use it. If they handed a sentence, write the one-task contract yourself (GOAL, SPEC, KEY PATHS, CONSTRAINTS, NON-GOALS, PROOF) and show it in one message before launching. Then: the clean-tree baseline, execution via the gauntlet's elected arm, the L6 review meeting, and a user-gated commit -- exactly the mechanics of kickoff-shaped steps 3 to 6, run standalone on this one task.
+If the user handed a frozen spec file, use it. If they handed a sentence, write the one-task contract yourself (GOAL, SPEC, KEY PATHS, CONSTRAINTS, NON-GOALS, PROOF) and show it in one message before launching. Then: the clean-tree baseline, the election meeting, execution via the arm it elected, the L6 review meeting, and a user-gated commit -- exactly the mechanics of kickoff-shaped steps 3 to 6, run standalone on this one task.
 
 ## The gauntlet interface
 
-The council hosts no repair loop of its own. One L1-L3 meeting per gauntlet round holds L1 CLASSIFY (every seat states a class with rationale, jointly settled), L2 CONSULT (each seat's independent reading of the chart, SETUPS, PRIORS and quota is quoted before merging), and L3 PLAN (executor + setup election, agreed by all seats or left open). The L6 review meeting is a second, independently-capped meeting on the elected arm's result. A failed L6 is a failed gauntlet round: it recurs the loop, round counter +1, to the cap (default 3); the Owner decides at the cap. Arms run no independent repair loops of their own -- they do the assigned task and report back. Mechanical re-open passes (a receipt taken only because a harness notification or a compaction closed the gate round) count toward neither the meeting's pass cap nor the gauntlet's round cap. In Standalone execution (below) the same L1-L3 meeting elects a seat as the builder in place of an engine arm, and the L6 review meeting is held by the roster minus the builder.
+The council hosts no repair loop of its own. One L1-L3 meeting per gauntlet round holds L1 CLASSIFY (every seat states a class with rationale, jointly settled), L2 CONSULT (each seat's independent reading of the chart, SETUPS, PRIORS and quota is quoted before merging), and L3 PLAN (the contracts, their bytes hashed). The election meeting (see The election meeting in [MEETING.md](MEETING.md)) then elects executor, effort, setup and agent count per task and closes on ELECTION.md; planning SAME PAGE advances to ELECT; execution requires election closure and all existing Owner gates. The L6 review meeting is a third, independently-capped meeting on the elected arm's result. A failed L6 is a failed gauntlet round: it recurs the loop, round counter +1, to the cap (default 3); the Owner decides at the cap. Arms run no independent repair loops of their own -- they do the assigned task and report back. Mechanical re-open passes (a receipt taken only because a harness notification or a compaction closed the gate round) count toward neither the meeting's pass cap nor the gauntlet's round cap. In Standalone execution (below) the election meeting elects a seat as the builder in place of an engine arm, and the L6 review meeting is held by the roster minus the builder.
 
 **Meeting verdict is not execution outcome.** At L6 the seats may reach SAME PAGE that the build FAILED, with an agreed defect list -- that agreement is the meeting closing correctly, not a deliberation objection reopening it. L7 grades the round; the gauntlet loop recurs on FAIL.
 
@@ -160,7 +160,7 @@ Kept guarantees, carried forward: `git init` is announced, not a commit; the bas
 
 ## Arm contracts
 
-Execution runs under the gauntlet's contract shape (GOAL, SPEC, KEY PATHS, CONSTRAINTS, NON-GOALS, PROOF, OUTPUT), elected at L3 and reviewed by every seat like any other plan line. Kept verbatim inside that shape, from the source contract template (the two spans below are byte-exact, LF-normalized, wrapping included):
+Execution runs under the gauntlet's contract shape (GOAL, SPEC, KEY PATHS, CONSTRAINTS, NON-GOALS, PROOF, OUTPUT), frozen at L3 and reviewed by every seat like any other plan line; executors are elected in the separate election meeting. Kept verbatim inside that shape, from the source contract template (the two spans below are byte-exact, LF-normalized, wrapping included):
 
 ```
 If a detail is impossible as written but the
@@ -230,7 +230,7 @@ The snapshot/baseline doctrine targets attribution and safety against COMMON fai
 
 [SEAT-CALLS.md](SEAT-CALLS.md) governs every seat call in council engagements; a generic provider skill (e.g. a standalone `codex` skill, if installed) is never consulted for model/effort menus or command shapes here. It remains the tool for ad-hoc use of that provider outside this system. Do not mix dialects in one engagement.
 
-The current rulings: a council meeting runs for every unit; seats never route -- they consult and decide, they do not select which arm executes on their own authority. Elections happen via the gauntlet at L3, reviewed by every seat like any plan line. The Owner's policy layer governs which seats exist and every cap. A seat's own research subagents are extensions of that seat -- they may research, verify, and gather evidence for that seat's side of a meeting -- but they are never executors unless the gauntlet elects them.
+The current rulings: a council meeting runs for every unit; seats never route -- they consult and decide, they do not select which arm executes on their own authority. Elections happen in the separate election meeting after planning closure, with every seat reviewing the same ELECTION.md revision. The Owner's policy layer governs which seats exist and every cap. A seat's own research subagents are extensions of that seat -- they may research, verify, and gather evidence for that seat's side of a meeting -- but they are never executors unless the gauntlet elects them.
 
 ## Commit-gate supremacy
 
@@ -258,13 +258,17 @@ the permissions the Owner grants, not the ones they ship with.
 
 ## Meeting caps
 
-Passes 10 per L1-L3 meeting and 10 per L6 review meeting, a hard cap; an Owner-set cap overrides. At the cap a flagged deadlock beats a fake approval and the Owner extends the passes or decides. (Named prior engagements and the historical cap-raise sequence that produced this default are scrubbed from this shipped copy; see the local house file for any such history the Owner records.)
+Passes 10 per L1-L3 meeting and 10 per L6 review meeting, a hard cap; an Owner-set cap overrides. The election meeting has its own cap of 5 passes. At the cap a flagged deadlock beats a fake approval and the Owner extends the passes or decides. (Named prior engagements and the historical cap-raise sequence that produced this default are scrubbed from this shipped copy; see the local house file for any such history the Owner records.)
 
 ## Elections through the infinity gauntlet
 
-Elections happen at L3 via the gauntlet, reviewed by every seat like any other plan line. Seats never route -- their job is to consult and elect, not to execute. Execution pins (a model/effort override on an execution call) carry only the Owner's authorization. Grades from L7 flow to the gauntlet's PRIORS. Usage informs election only (see Usage informs election only, below). An unavailable seat stops the meeting and notifies the Owner -- never a solo fallback. An executor's pre-start rate limit re-elects inside L4, on the remaining arms, with the event recorded.
+Elections happen in the election meeting (see The election meeting in [MEETING.md](MEETING.md)), a council meeting of its own after the planning meeting closes, and its ELECTION.md is reviewed by every seat like any plan file. Seats never route -- their job is to consult and elect, not to execute. Execution pins (a model/effort override on an execution call) carry only the Owner's authorization. Grades from L7 flow to the gauntlet's PRIORS. Usage informs election only (see Usage informs election only, below). An unavailable seat stops the meeting and notifies the Owner -- never a solo fallback. An executor's pre-start rate limit returns from L4 to the election meeting within the same round, on the remaining arms, with the event recorded and the consumed passes preserved.
 
 The council hosts no repair loop: a failed L6 is a failed gauntlet round, which recurs the loop to the cap, and the Owner decides at the cap. Post-cap self-execution needs the Owner's explicit go. Planner-seat models (e.g. the coordinator's own model, or another planning seat) are roster arms elected LAST in preference order, with no special permission and no "upgrade" framing, when the gauntlet elects them at all.
+
+## The election meeting
+
+Held after every planning SAME PAGE and before any dispatch, in every gauntlet round, on `ELECTION.md`; the procedure, the pre-execution verification and the re-entry rules are in [MEETING.md](MEETING.md), section The election meeting.
 
 ## Standalone execution (installs without an executor engine)
 
@@ -272,7 +276,7 @@ In Standalone execution only, invoke council alone; engine-specific activation, 
 
 **Activation.** This mode applies only when the standing-policy file the runtime reads names no executor engine skill and no engine skill is installed. An install with an engine never uses it. At L3 the coordinator states the condition it checked -- which policy file, which engine skills it searched for -- in one line, then announces: standalone execution -- the seats elect the builder.
 
-**Election.** The seats elect ONE seat as the builder, capability first, from the evidence the install has: its own meeting logs (prior L6 verdicts per seat). Where none exist, the seats agree the election on stated capability grounds, record the rationale, and that result becomes the first record. Planner-seat models (the coordinator's own model, or another planning seat) are elected LAST in preference order, with no special permission and no upgrade framing. A seat is electable only if its build call recipe in SEAT-CALLS.md exists and has been verified on the rig. The election is agreed by every seat or stays an open item.
+**Election.** The builder is elected in the election meeting (see The election meeting in [MEETING.md](MEETING.md)), run with the install's own verified seat recipes and local evidence, its ELECTION.md beside the run's PLAN_FILE (the artifact home), engine-specific fields marked inapplicable with the reason; no engine data or external bench is required. The seats elect ONE seat as the builder, capability first, from the evidence the install has: its own meeting logs (prior L6 verdicts per seat). Where none exist, the seats agree the election on stated capability grounds, record the rationale, and that result becomes the first record. Planner-seat models (the coordinator's own model, or another planning seat) are elected LAST in preference order, with no special permission and no upgrade framing. A seat is electable only if its build call recipe in SEAT-CALLS.md exists and has been verified on the rig. The election is agreed by every seat or stays an open item.
 
 **Contract.** The build contract (the shape in Arm contracts, above, with the verbatim impossibility and BLOCKED spans) is written to its own file; the closing SAME PAGE of the L1-L3 meeting binds to that file by its sha256, recorded in `PLAN_FILE`. The contract file is excluded from the build writes and its hash is re-read at review. For the duration of the contract the elected seat is an ARM: it executes only the contract, checkpoints to disk as it goes, reports files changed and raw proof output, never redesigns, and returns BLOCKED on a material impossibility. While it builds, no seat touches the code (Rule 2). The seat that builds is not sitting as a seat while it builds.
 
@@ -299,9 +303,9 @@ A project's own configuration may name an artifact directory. When it does, ever
 
 Every ground-truth line in a plan draft one seat hands to another carries a `file:line` citation, or is marked UNVERIFIED. Facts about two similar artifacts (two configs, two branches) are labeled per artifact at read time, never compared from memory of a batch read. The review format for strategy items stays VERIFIED / NOT VERIFIED / WRONG with citations.
 
-## SAME PAGE is the execution green light
+## SAME PAGE advances to ELECT; election closure is the execution green light
 
-On the full close predicate (every participating seat's `VERDICT: SAME PAGE`, one revision, one roster, zero open items) the build starts; the coordinator inserts no plan-approval stop of its own. The Owner's reserved gates (the Grill answers, stage entry, re-plan passes, cap stops, commits, and any gate the Owner names) stay exactly as stated; an unrequested approval stop beyond them is a defect logged against the coordinator.
+On the full close predicate (every participating seat's `VERDICT: SAME PAGE`, one revision, one roster, zero open items) planning SAME PAGE advances to ELECT; execution requires election closure and all existing Owner gates; the coordinator inserts no plan-approval stop of its own. The Owner's reserved gates (the Grill answers, stage entry, re-plan passes, cap stops, commits, and any gate the Owner names) stay exactly as stated; an unrequested approval stop beyond them is a defect logged against the coordinator.
 
 ## Generated deliverables are regenerated, never patched
 
